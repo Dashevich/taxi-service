@@ -1,0 +1,71 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://path.ru/events/created-trip/schema.json",
+    "title": "Событие создания поездки",
+    "description": "Json schema события создания поездки",
+    "type": "object",
+    "required": [
+      "id",
+      "source",
+      "type",
+      "datacontenttype",
+      "time",
+      "data"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Идентификатор события, уникальный в разрезе source",
+        "example": "284655d6-0190-49e7-34e9-9b4060acc260"
+      },
+      "source": {
+        "type": "string",
+        "description": "Источник. Описывается в формате URI-REF",
+        "example": "/trip"
+      },
+      "type": {
+        "$ref": "#/$defs/eventType",
+        "description": "Тип события. Описывается в формате reversed DNS"
+      },
+      "datacontenttype": {
+        "type": "string",
+        "description": "MIME-тип данных тела события",
+        "example": "application/json"
+      },
+      "time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Дата-время события в ISO-8601"
+      },
+      "data": {
+        "$ref": "#/$defs/data",
+        "description": "Тело события"
+      }
+    },
+    "$defs": {
+      "eventType": {
+        "type": "string",
+        "enum": [
+          "trip.event.created"
+        ]
+      },
+      "data": {
+        "type": "object",
+        "properties": {
+          "trip_id": {
+            "type": "string",
+            "description": "Идентификатор созданной поездки"
+          },
+          "offer_id": {
+            "type": "string",
+            "description": "Идентификатор предложения по которому создана поездка"
+          }
+        },
+        "required": [
+          "trip_id",
+          "offer_id"
+        ]
+      }
+    }
+  }

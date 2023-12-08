@@ -1,0 +1,11 @@
+{
+    "id": "284655d6-0190-49e7-34e9-9b4060acc260",
+    "source": "/client",
+    "type": "trip.command.cancel",
+    "datacontenttype": "application/json",
+    "time": "2023-11-09T17:31:00Z",
+    "data": {
+        "trip_id": "284655d6-0190-49e7-34e9-9b4060acc260",
+        "reason": "Водитель уехал в другую сторону"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "id": "284655d6-0190-49e7-34e9-9b4060acc261",
+    "source": "/driver",
+    "type": "trip.command.accept",
+    "datacontenttype": "application/json",
+    "time": "2023-11-09T17:31:00Z",
+    "data": {
+        "trip_id": "284655d6-0190-49e7-34e9-9b4060acc260",
+        "driver_id": "42d6142f-c27e-4c73-bd3a-0051c440aecb"
+    }
+}

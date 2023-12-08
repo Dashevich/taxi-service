@@ -1,0 +1,71 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://path.ru/commands/accept-trip/schema.json",
+    "title": "Команда подтверждения поездки",
+    "description": "Json schema команды подтверждения поездки",
+    "type": "object",
+    "required": [
+      "id",
+      "source",
+      "type",
+      "datacontenttype",
+      "time",
+      "data"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Идентификатор команды, уникальный в разрезе source",
+        "example": "284655d6-0190-49e7-34e9-9b4060acc260"
+      },
+      "source": {
+        "type": "string",
+        "description": "Источник. Описывается в формате URI-REF",
+        "example": "/client"
+      },
+      "type": {
+        "$ref": "#/$defs/commandType",
+        "description": "Тип команды. Описывается в формате reversed DNS"
+      },
+      "datacontenttype": {
+        "type": "string",
+        "description": "MIME-тип данных тела события",
+        "example": "application/json"
+      },
+      "time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Дата-время события в ISO-8601"
+      },
+      "data": {
+        "$ref": "#/$defs/data",
+        "description": "Тело события"
+      }
+    },
+    "$defs": {
+      "commandType": {
+        "type": "string",
+        "enum": [
+          "trip.command.accept"
+        ]
+      },
+      "data": {
+        "type": "object",
+        "properties": {
+          "trip_id": {
+            "type": "string",
+            "description": "Идентификатор поездки"
+          },
+          "driver_id": {
+            "type": "string",
+            "description": "Идентификатор водителя"
+          }
+        },
+        "required": [
+          "trip_id",
+          "driver_id"
+        ]
+      }
+    }
+  }
