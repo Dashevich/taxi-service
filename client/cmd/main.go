@@ -1,8 +1,8 @@
 package main
 
 import (
-	"client/client/app"
-	"client/client/internal/config"
+	"client/app"
+	"client/internal/config"
 	"context"
 	_ "embed"
 	"flag"
