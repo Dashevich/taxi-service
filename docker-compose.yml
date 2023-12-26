@@ -67,6 +67,27 @@ services:
       postgres:
         condition: service_healthy
 
+  client:
+    ports:
+      - "8060:8060"
+    build:
+      context: client
+      dockerfile: ./Dockerfile
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka
+
+    client:
+    ports:
+      - "8060:8060"
+    build:
+      context: client
+      dockerfile: ./Dockerfile
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka
 
   offering:
     build:
@@ -76,16 +97,5 @@ services:
       - "8080:8080"
     networks:
       - kafka-network
-
-  client:
-    ports:
-      - "8060:8060"
-    build:
-      context: client-cvc
-      dockerfile: ./Dockerfile
-    networks:
-      - kafka-network
-    depends_on:
-      - kafka
 networks:
   kafka-network:

@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"client/client/internal/config"
-	"client/client/internal/models"
+	"client/internal/config"
+	"client/internal/models"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
