@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/segmentio/kafka-go"
 	"io"
 	"log"
@@ -32,24 +33,24 @@ func NewApp(cfg *config.Config, ctx context.Context) *App {
 		log.Fatal("no connection to db", err)
 	}
 	time.Sleep(10)
-	conn1, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-client", 0)
+	tripClient, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-client", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
-	conn2, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-driver", 0)
+	tripDriver, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-driver", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
-	conn3, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-inbound", 0)
+	toTrip, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-inbound", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
 	return &App{
 		cfg:          cfg,
 		db:           db,
-		ClientWriter: conn1,
-		DriverWriter: conn2,
-		Reader:       conn3,
+		ClientWriter: tripClient,
+		DriverWriter: tripDriver,
+		Reader:       toTrip,
 	}
 }
 
@@ -217,7 +218,7 @@ func (app *App) CreateRow(offer_id string, offer model.Offer, ctx context.Contex
 	price, _ := json.Marshal(offer.Price)
 	trip_id := uuid.New().String()
 	sql, args, err := squirrel.Insert("trips").
-		Columns("trip_id", "offer_id", "\"from\"", "\"to\"", "price", "trip_status").
+		Columns("trip_id", "offer_id", "from_offer", "to_offer", "price", "trip_status").
 		Values(trip_id, offer_id, from, to, price, "CREATED").
 		Suffix("RETURNING id").
 		PlaceholderFormat(squirrel.Dollar).ToSql()

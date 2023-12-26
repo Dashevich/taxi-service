@@ -2,7 +2,7 @@ http:
   port: 8080
 signing-key: "WeAreInTrouble"
 db:
-  dsn: postgres://postgres:postgres@db:5432/example?sslmode=disable
+  dsn: postgres://postgres:postgres@db:5432/trips_history?sslmode=disable
   migrations_dir: "migrations"
 
 kafka:

@@ -78,6 +78,17 @@ services:
     depends_on:
       - kafka
 
+    client:
+    ports:
+      - "8060:8060"
+    build:
+      context: client
+      dockerfile: ./Dockerfile
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka
+
   offering:
     build:
       context: offering_service
@@ -86,6 +97,5 @@ services:
       - "8080:8080"
     networks:
       - kafka-network
-
 networks:
   kafka-network:
