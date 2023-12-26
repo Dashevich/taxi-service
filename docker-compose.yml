@@ -2,6 +2,7 @@ version: '3'
 services:
   mongo:
     image: mongo
+    restart: always
     container_name: mongo-container-global
     networks:
       - kafka-network
@@ -33,13 +34,13 @@ services:
     networks:
       - kafka-network
 
-  postgres:
+  db:
     image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: trips_history
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -59,12 +60,14 @@ services:
     restart: on-failure
     networks:
       - kafka-network
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     depends_on:
       kafka:
         condition: service_started
       offering:
         condition: service_started
-      postgres:
+      db:
         condition: service_healthy
 
   client:
@@ -77,17 +80,7 @@ services:
       - kafka-network
     depends_on:
       - kafka
-
-    client:
-    ports:
-      - "8060:8060"
-    build:
-      context: client
-      dockerfile: ./Dockerfile
-    networks:
-      - kafka-network
-    depends_on:
-      - kafka
+      - mongo
 
   offering:
     build:
