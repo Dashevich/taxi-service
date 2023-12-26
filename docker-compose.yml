@@ -1,0 +1,66 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    networks:
+      - kafka-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    ports:
+      - 9092:9092
+    networks:
+      - kafka-network
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: trips_history
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kafka-network
+
+  trip:
+    build:
+      context: trip_service
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    networks:
+      - kafka-network
+    depends_on:
+      kafka:
+        condition: service_started
+      offering:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+
+
+  offering:
+    build:
+      context: offering_service
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - kafka-network
+networks:
+  kafka-network:

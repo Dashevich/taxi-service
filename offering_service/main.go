@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -19,10 +18,10 @@ type App struct {
 }
 
 func NewApp() App {
-	var filepath string
-	flag.StringVar(&filepath, "c", ".config.yaml", "set config path")
-	flag.Parse()
-
+	//var filepath string
+	//flag.StringVar(&filepath, "c", ".config.yaml", "set config path")
+	//flag.Parse()
+	filepath := "./cmd/config.yaml"
 	cfg, err := config.NewConfig(filepath)
 	if err != nil {
 		fmt.Println(err)

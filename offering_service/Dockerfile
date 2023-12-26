@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o trip_service main.go
+RUN go build -o offering_service main.go
 
-CMD ["./trip_service"]
+CMD ["./offering_service"]
 
