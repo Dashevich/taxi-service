@@ -19,17 +19,15 @@ services:
     networks:
       - kafka-network
 
-  postgres:
+  db:
     image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: trips_history
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - 5432:5432
     healthcheck:
       test: "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"
       interval: 10s
@@ -50,7 +48,7 @@ services:
         condition: service_started
       offering:
         condition: service_started
-      postgres:
+      db:
         condition: service_healthy
 
 

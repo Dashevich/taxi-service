@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/segmentio/kafka-go"
 	"io"
 	"log"
@@ -217,7 +218,7 @@ func (app *App) CreateRow(offer_id string, offer model.Offer, ctx context.Contex
 	price, _ := json.Marshal(offer.Price)
 	trip_id := uuid.New().String()
 	sql, args, err := squirrel.Insert("trips").
-		Columns("trip_id", "offer_id", "\"from\"", "\"to\"", "price", "trip_status").
+		Columns("trip_id", "offer_id", "from_offer", "to_offer", "price", "trip_status").
 		Values(trip_id, offer_id, from, to, price, "CREATED").
 		Suffix("RETURNING id").
 		PlaceholderFormat(squirrel.Dollar).ToSql()
