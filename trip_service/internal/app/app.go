@@ -33,24 +33,24 @@ func NewApp(cfg *config.Config, ctx context.Context) *App {
 		log.Fatal("no connection to db", err)
 	}
 	time.Sleep(10)
-	conn1, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-client", 0)
+	tripClient, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-client", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
-	conn2, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-driver", 0)
+	tripDriver, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-to-driver", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
-	conn3, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-inbound", 0)
+	toTrip, err := service.ConnectKafka(ctx, cfg.Kafka.Address, "trip-inbound", 0)
 	if err != nil {
 		log.Fatal("Kafka connect error")
 	}
 	return &App{
 		cfg:          cfg,
 		db:           db,
-		ClientWriter: conn1,
-		DriverWriter: conn2,
-		Reader:       conn3,
+		ClientWriter: tripClient,
+		DriverWriter: tripDriver,
+		Reader:       toTrip,
 	}
 }
 
