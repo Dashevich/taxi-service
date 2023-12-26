@@ -10,6 +10,7 @@ type Config struct {
 	Version   string `yaml:"version"`
 	KafkaAddr string `yaml:"kafka_addr"`
 	URI       string `yaml:"uri"`
+	DB_name   string `yaml:"db_name"`
 }
 
 type Http struct {

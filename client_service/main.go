@@ -1,11 +1,10 @@
 package main
 
 import (
-	"client/app"
-	"client/internal/config"
+	"client_service/app"
+	"client_service/internal/config"
 	"context"
 	_ "embed"
-	"flag"
 	"fmt"
 	"log"
 	"os/signal"
@@ -21,9 +20,10 @@ func handleRecover(ctx context.Context) {
 }
 
 func main() {
-	var cfgPath string
-	flag.StringVar(&cfgPath, "cfg", "./client/cmd/.config.yaml", "set cfg path")
-	flag.Parse()
+	//var cfgPath string
+	//flag.StringVar(&cfgPath, "cfg", "./client/cmd/.config.yaml", "set cfg path")
+	//flag.Parse()
+	cfgPath := "./cmd/config.yaml"
 
 	cfg, err := config.NewConfig(cfgPath)
 	if err != nil {

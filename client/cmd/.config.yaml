@@ -1,4 +1,0 @@
-port: :8080,
-uri: mongodb://127.0.0.1:27017/client_db,
-kafka_addr: kafka_client:9092,
-db_name: client_db

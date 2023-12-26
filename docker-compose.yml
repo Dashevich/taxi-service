@@ -30,7 +30,7 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
     ports:
-      - 9092:9092
+      - "9092:9092"
     networks:
       - kafka-network
 
@@ -71,10 +71,11 @@ services:
         condition: service_healthy
 
   client:
+    restart: on-failure
     ports:
-      - "8060:8060"
+      - "8080:8080"
     build:
-      context: client
+      context: client_service
       dockerfile: ./Dockerfile
     networks:
       - kafka-network
@@ -87,7 +88,7 @@ services:
       context: offering_service
       dockerfile: ./Dockerfile
     ports:
-      - "8080:8080"
+      - "8000:8080"
     networks:
       - kafka-network
 networks:

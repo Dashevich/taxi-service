@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"client/internal/kafka_client"
-	"client/internal/models"
+	"client_service/internal/kafka_client"
+	"client_service/internal/models"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -75,7 +75,7 @@ func (h *Handlers) CreateTrip(w http.ResponseWriter, r *http.Request) {
 		Id:              result.InsertedID.(primitive.ObjectID).Hex(),
 		Source:          "/client",
 		Type:            "trip.command.create",
-		DataContentType: "application/jsonapplication/json",
+		DataContentType: "application/json",
 		Time:            time.Now(),
 		Data:            jsonData,
 	}

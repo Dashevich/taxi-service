@@ -9,6 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -C ./cmd/ -o app
+RUN go build -o client_service main.go
 
-CMD ["./cmd/app"]
+CMD ["./client_service"]
+

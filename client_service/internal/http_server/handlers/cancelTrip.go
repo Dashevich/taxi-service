@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"client/internal/kafka_client"
-	"client/internal/models"
+	"client_service/internal/kafka_client"
+	"client_service/internal/models"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -27,7 +27,7 @@ func (h *Handlers) CancelTrip(w http.ResponseWriter, r *http.Request) {
 		Id:              tripID,
 		Source:          "/client",
 		Type:            "trip.command.cancel",
-		DataContentType: "application/jsonapplication/json",
+		DataContentType: "application/json",
 		Time:            time.Now(),
 		Data:            data,
 	}

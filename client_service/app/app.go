@@ -1,11 +1,11 @@
 package app
 
 import (
-	"client/internal/config"
-	"client/internal/http_server/handlers"
-	"client/internal/kafka_client"
-	"client/internal/models"
-	"client/internal/storage"
+	"client_service/internal/config"
+	"client_service/internal/http_server/handlers"
+	"client_service/internal/kafka_client"
+	"client_service/internal/models"
+	"client_service/internal/storage"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"os"

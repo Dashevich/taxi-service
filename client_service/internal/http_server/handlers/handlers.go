@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"client/internal/config"
-	"client/internal/storage"
+	"client_service/internal/config"
+	"client_service/internal/storage"
 	"go.uber.org/zap"
 	"net/http"
 )
