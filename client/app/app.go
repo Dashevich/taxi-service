@@ -1,14 +1,13 @@
 package app
 
 import (
-	"client_service/client/internal/config"
-	"client_service/client/internal/http_server/handlers"
-	"client_service/client/internal/kafka_client"
-	"client_service/client/internal/models"
-	"client_service/client/internal/storage"
+	"client/client/internal/config"
+	"client/client/internal/http_server/handlers"
+	"client/client/internal/kafka_client"
+	"client/client/internal/models"
+	"client/client/internal/storage"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	"github.com/segmentio/kafka-go"
 	"os"
 
 	"context"
@@ -16,6 +15,8 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
@@ -28,10 +29,9 @@ type App struct {
 	cfg    *config.Config
 	logger *zap.Logger
 	//client       *mongo.Client
-	store        *storage.ControllerDB
-	server       *http.Server
-	sendTopic    *kafka.Conn
-	receiveTopic *kafka.Conn
+	store  *storage.ControllerDB
+	server *http.Server
+	Tracer trace.Tracer
 }
 
 func NewApp(cfg *config.Config) *App {
@@ -54,29 +54,13 @@ func NewApp(cfg *config.Config) *App {
 		logger.Error("Failed to connect MongoDB:", zap.Error(err))
 		log.Fatal(err)
 	}
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		logger.Error("Failed to ping MongoDB:", zap.Error(err))
-	}
-
-	send, err := kafka_client.ConnectKafka(ctx, cfg.KafkaAddr, "trip-client-topic", 0)
-	if err != nil {
-		logger.Error("Kafka connect error. %v", zap.Error(err))
-		log.Fatal(err)
-	}
-
-	recieve, err := kafka_client.ConnectKafka(ctx, cfg.KafkaAddr, "driver-client-trip-topic", 0)
-	if err != nil {
-		logger.Error("Kafka connect error. %v", zap.Error(err))
-		log.Fatal(err)
-	}
 
 	controller := &storage.ControllerDB{
 		Cfg:    cfg,
 		Client: client,
 		Logger: logger,
 	}
-
+	tracer := otel.Tracer("final")
 	a := &App{
 		cfg:    cfg,
 		store:  controller,
@@ -85,8 +69,7 @@ func NewApp(cfg *config.Config) *App {
 			Addr:    address,
 			Handler: Router(cfg, controller, logger),
 		},
-		sendTopic:    send,
-		receiveTopic: recieve,
+		Tracer: tracer,
 	}
 	return a
 }
@@ -132,8 +115,10 @@ func (a *App) Run() {
 }
 
 func (a *App) Listen() {
-
-	bytes, err := kafka_client.ReadFromTopic(a.sendTopic)
+	ctx, span := a.Tracer.Start(context.Background(), "Iteration")
+	defer span.End()
+	connection, err := kafka_client.ConnectKafka(ctx, "kafka:9092", "trip-client-topic", 0)
+	bytes, err := kafka_client.ReadFromTopic(connection)
 	if err != nil {
 		return
 	}

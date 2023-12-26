@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"client_service/client/internal/kafka_client"
-	"client_service/client/internal/models"
+	"client/client/internal/kafka_client"
+	"client/client/internal/models"
 	"context"
 	"encoding/json"
 	"fmt"
